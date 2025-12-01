@@ -5,7 +5,7 @@
  * 
  */
 
-#include<interrupts_student1_student2.hpp>
+#include"interrupts_101313150_101266157.hpp"
 
 void FCFS(std::vector<PCB> &ready_queue) {
     std::sort( 
@@ -17,14 +17,11 @@ void FCFS(std::vector<PCB> &ready_queue) {
             );
 }
 
-std::tuple<std::string /* add std::string for bonus mark */ > run_simulation(std::vector<PCB> list_processes) {
+std::tuple<std::string > run_simulation(std::vector<PCB> list_processes) {
 
     std::vector<PCB> ready_queue;   //The ready queue of processes
     std::vector<PCB> wait_queue;    //The wait queue of processes
-    std::vector<PCB> job_list;      //A list to keep track of all the processes. This is similar
-                                    //to the "Process, Arrival time, Burst time" table that you
-                                    //see in questions. You don't need to use it, I put it here
-                                    //to make the code easier :).
+    std::vector<PCB> job_list = list_processes ;   //A list to keep track of all the processes.
 
     unsigned int current_time = 0;
     PCB running;
@@ -36,44 +33,174 @@ std::tuple<std::string /* add std::string for bonus mark */ > run_simulation(std
 
     //make the output table (the header row)
     execution_status = print_exec_header();
+    
+    //return empty table if there are no processes
+    if (job_list.empty()) {
+	execution_status += print_exec_footer();
+	return std::make_tuple(execution_status);
+    }
 
-    //Loop while till there are no ready or waiting processes.
-    //This is the main reason I have job_list, you don't have to use it.
-    while(!all_process_terminated(job_list) || job_list.empty()) {
+    // BONUS: open memory usage log
+    std::ofstream mem_out("memory.txt");
 
-        //Inside this loop, there are three things you must do:
-        // 1) Populate the ready queue with processes as they arrive
-        // 2) Manage the wait queue
-        // 3) Schedule processes from the ready queue
+    // log memory state when a new process is admitted
+    auto log_memory = [&](unsigned int time, int pid, const char* event) {
+	const unsigned int partition_sizes[6] = {40, 25, 15, 10, 8, 2};
+	bool partition_used[6] = {false, false, false, false, false, false};
 
-        //Population of ready queue is given to you as an example.
-        //Go through the list of proceeses
-        for(auto &process : list_processes) {
-            if(process.arrival_time == current_time) {//check if the AT = current time
-                //if so, assign memory and put the process into the ready queue
-                assign_memory(process);
+    	for (const PCB &proc : job_list) {
+            if (proc.partition_number >= 0 && proc.state != TERMINATED) {
+            	int idx = proc.partition_number;
+            	if (idx >= 0 && idx < 6) {
+                    partition_used[idx] = true;
+            	}
+            }
+    	}
 
-                process.state = READY;  //Set the process state to READY
-                ready_queue.push_back(process); //Add the process to the ready queue
-                job_list.push_back(process); //Add it to the list of processes
+    	unsigned int total_used = 0;
+    	unsigned int total_usable_free = 0;
 
-                execution_status += print_exec_status(current_time, process.PID, NEW, READY);
+    	for (int i = 0; i < 6; ++i) {
+            if (partition_used[i]) {
+            	total_used += partition_sizes[i];
+            } else {
+            	total_usable_free += partition_sizes[i];
+            }
+    	}
+
+    	mem_out << "t=" << time << "ms"
+            	<< " PID=" << pid
+            	<< " event=" << event
+            	<< " used=" << total_used
+            	<< " free=" << total_usable_free
+            	<< " partitions=[";
+    	for (int i = 0; i < 6; ++i) {
+            mem_out << (partition_used[i] ? 'X' : '_');
+            if (i < 5) mem_out << ' ';
+    	}
+    	mem_out << "]\n";
+    };
+
+    const std::size_t n = job_list.size();
+    std::vector<unsigned int> cpu_since_last_io(n, 0); 
+    std::vector<int> io_completion_time(n, -1); 
+
+    //initialize processes to NEW and set remaining time and partition number
+    for (std::size_t i = 0; i < n; ++i) {
+        job_list[i].state = NEW;
+        job_list[i].remaining_time = job_list[i].processing_time;
+        job_list[i].partition_number = -1;
+    }
+	
+    int running_index = -1;
+
+    //Loop until processes in job_list are terminated
+    while(!all_process_terminated(job_list)) {
+
+	for (std::size_t i = 0; i < n; ++i) {
+            PCB &p = job_list[i];
+
+            // if arrival time is reached and state is new admit the process
+            if (p.state == NEW && p.arrival_time <= current_time) {
+
+                if (assign_memory(p)) {
+                    execution_status += print_exec_status(current_time, p.PID, NEW, READY);
+                    p.state = READY;
+                    ready_queue.push_back(p);
+
+		    log_memory(current_time, p.PID, "NEW->READY"); 
+                }
             }
         }
 
         ///////////////////////MANAGE WAIT QUEUE/////////////////////////
-        //This mainly involves keeping track of how long a process must remain in the ready queue
+       
+	// any process in WAITING that completes their I/O naives back to ready
+	for (std::size_t i = 0; i < n; ++i) {
+            PCB &p = job_list[i];
+            if (p.state == WAITING && io_completion_time[i] == static_cast<int>(current_time)) {
+                execution_status += print_exec_status(current_time, p.PID, WAITING, READY);
+                p.state = READY;
+                io_completion_time[i] = -1;
+                ready_queue.push_back(p);
+            }
+        }
 
         /////////////////////////////////////////////////////////////////
 
         //////////////////////////SCHEDULER//////////////////////////////
-        FCFS(ready_queue); //example of FCFS is shown here
+	
+	// if no process is running pick the READY process with the the lowest PID
+	if (running_index == -1) {
+            int best_index = -1;
+            int best_pid   = 0;
+
+            for (std::size_t i = 0; i < n; ++i) {
+                PCB &p = job_list[i];
+                if (p.state == READY) {
+                    if (best_index == -1 || p.PID < best_pid) {
+                        best_index = static_cast<int>(i);
+                        best_pid   = p.PID;
+                    }
+                }
+            }
+
+            if (best_index != -1) {
+                PCB &p = job_list[best_index];
+                execution_status += print_exec_status(current_time, p.PID, READY, RUNNING);
+                p.state = RUNNING;
+                running_index = best_index;
+            }
+        }
+
+        // If there is still no process to run advance time
+        if (running_index == -1) {
+            ++current_time;
+            continue;
+        }
+
         /////////////////////////////////////////////////////////////////
 
+	
+	PCB &cur = job_list[running_index];
+
+        // use 1 ms of CPU
+        if (cur.remaining_time > 0) {
+            --cur.remaining_time;
+        }
+        ++cpu_since_last_io[running_index];
+
+        unsigned int next_time = current_time + 1;
+
+	
+	bool context_change = false;
+
+        // CPU burst completes
+        if (cur.remaining_time == 0) {
+            execution_status += print_exec_status(next_time, cur.PID, RUNNING, TERMINATED);
+            cur.state = TERMINATED;
+            free_memory(cur);
+            running_index = -1;
+            context_change = true;
+        }
+        // I/O request 
+        else if (cur.io_freq > 0 && cpu_since_last_io[running_index] >= cur.io_freq) {
+            cpu_since_last_io[running_index] = 0;
+            io_completion_time[running_index] = static_cast<int>(next_time + cur.io_duration);
+            execution_status += print_exec_status(next_time, cur.PID, RUNNING, WAITING);
+            cur.state = WAITING;
+            running_index = -1;
+            context_change = true;
+        }
+
+        current_time = next_time;
+        (void)context_change;
     }
-    
+
     //Close the output table
     execution_status += print_exec_footer();
+
+    mem_out.close();
 
     return std::make_tuple(execution_status);
 }

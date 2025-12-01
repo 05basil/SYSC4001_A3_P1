@@ -1,0 +1,3 @@
+t=0ms PID=6 event=NEW->READY used=10 free=90 partitions=[_ _ _ X _ _]
+t=15ms PID=3 event=NEW->READY used=12 free=88 partitions=[_ _ _ X _ X]
+t=30ms PID=11 event=NEW->READY used=27 free=73 partitions=[_ _ X X _ X]

@@ -1,0 +1,79 @@
++------------------------------------------------+
+|Time of Transition |PID | Old State | New State |
++------------------------------------------------+
+|                 0 |  9 |       NEW |     READY |
+|                 0 |  9 |     READY |   RUNNING |
+|                10 |  4 |       NEW |     READY |
+|                12 | 12 |       NEW |     READY |
+|                15 |  9 |   RUNNING |   WAITING |
+|                15 |  4 |     READY |   RUNNING |
+|                20 |  9 |   WAITING |     READY |
+|                25 | 15 |       NEW |     READY |
+|                45 |  4 |   RUNNING |   WAITING |
+|                45 | 12 |     READY |   RUNNING |
+|                55 | 12 |   RUNNING |   WAITING |
+|                55 |  4 |   WAITING |     READY |
+|                55 |  9 |     READY |   RUNNING |
+|                62 | 12 |   WAITING |     READY |
+|                70 |  9 |   RUNNING |   WAITING |
+|                70 | 15 |     READY |   RUNNING |
+|                75 |  9 |   WAITING |     READY |
+|                90 | 15 |   RUNNING |   WAITING |
+|                90 |  4 |     READY |   RUNNING |
+|                95 | 15 |   WAITING |     READY |
+|               120 |  4 |   RUNNING |   WAITING |
+|               120 | 12 |     READY |   RUNNING |
+|               130 | 12 |   RUNNING |   WAITING |
+|               130 |  4 |   WAITING |     READY |
+|               130 |  9 |     READY |   RUNNING |
+|               137 | 12 |   WAITING |     READY |
+|               145 |  9 |   RUNNING |   WAITING |
+|               145 | 15 |     READY |   RUNNING |
+|               150 |  9 |   WAITING |     READY |
+|               165 | 15 |   RUNNING |   WAITING |
+|               165 |  4 |     READY |   RUNNING |
+|               170 | 15 |   WAITING |     READY |
+|               195 |  4 |   RUNNING |   WAITING |
+|               195 | 12 |     READY |   RUNNING |
+|               205 | 12 |   RUNNING |   WAITING |
+|               205 |  4 |   WAITING |     READY |
+|               205 |  9 |     READY |   RUNNING |
+|               212 | 12 |   WAITING |     READY |
+|               220 |  9 |   RUNNING |   WAITING |
+|               220 | 15 |     READY |   RUNNING |
+|               225 |  9 |   WAITING |     READY |
+|               240 | 15 |   RUNNING |TERMINATED |
+|               240 |  4 |     READY |   RUNNING |
+|               270 |  4 |   RUNNING |   WAITING |
+|               270 | 12 |     READY |   RUNNING |
+|               280 | 12 |   RUNNING |   WAITING |
+|               280 |  4 |   WAITING |     READY |
+|               280 |  9 |     READY |   RUNNING |
+|               287 | 12 |   WAITING |     READY |
+|               295 |  9 |   RUNNING |   WAITING |
+|               295 |  4 |     READY |   RUNNING |
+|               300 |  9 |   WAITING |     READY |
+|               315 |  4 |   RUNNING |TERMINATED |
+|               315 | 12 |     READY |   RUNNING |
+|               325 | 12 |   RUNNING |   WAITING |
+|               325 |  9 |     READY |   RUNNING |
+|               332 | 12 |   WAITING |     READY |
+|               340 |  9 |   RUNNING |TERMINATED |
+|               340 | 12 |     READY |   RUNNING |
+|               350 | 12 |   RUNNING |   WAITING |
+|               357 | 12 |   WAITING |     READY |
+|               357 | 12 |     READY |   RUNNING |
+|               367 | 12 |   RUNNING |   WAITING |
+|               374 | 12 |   WAITING |     READY |
+|               374 | 12 |     READY |   RUNNING |
+|               384 | 12 |   RUNNING |   WAITING |
+|               391 | 12 |   WAITING |     READY |
+|               391 | 12 |     READY |   RUNNING |
+|               401 | 12 |   RUNNING |   WAITING |
+|               408 | 12 |   WAITING |     READY |
+|               408 | 12 |     READY |   RUNNING |
+|               418 | 12 |   RUNNING |   WAITING |
+|               425 | 12 |   WAITING |     READY |
+|               425 | 12 |     READY |   RUNNING |
+|               435 | 12 |   RUNNING |TERMINATED |
++------------------------------------------------+

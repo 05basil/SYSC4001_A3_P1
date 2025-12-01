@@ -1,0 +1,46 @@
++------------------------------------------------+
+|Time of Transition |PID | Old State | New State |
++------------------------------------------------+
+|                 0 |  3 |       NEW |     READY |
+|                 0 |  3 |     READY |   RUNNING |
+|                 5 |  8 |       NEW |     READY |
+|                10 | 14 |       NEW |     READY |
+|                50 |  3 |   RUNNING |   WAITING |
+|                50 |  8 |     READY |   RUNNING |
+|                60 |  3 |   WAITING |     READY |
+|                70 |  8 |   RUNNING |   WAITING |
+|                70 | 14 |     READY |   RUNNING |
+|                80 |  8 |   WAITING |     READY |
+|               100 | 14 |   RUNNING |   WAITING |
+|               100 |  3 |     READY |   RUNNING |
+|               110 | 14 |   WAITING |     READY |
+|               150 |  3 |   RUNNING |   WAITING |
+|               150 |  8 |     READY |   RUNNING |
+|               160 |  3 |   WAITING |     READY |
+|               170 |  8 |   RUNNING |   WAITING |
+|               170 | 14 |     READY |   RUNNING |
+|               180 |  8 |   WAITING |     READY |
+|               200 | 14 |   RUNNING |   WAITING |
+|               200 |  3 |     READY |   RUNNING |
+|               210 | 14 |   WAITING |     READY |
+|               250 |  3 |   RUNNING |   WAITING |
+|               250 |  8 |     READY |   RUNNING |
+|               260 |  3 |   WAITING |     READY |
+|               270 |  8 |   RUNNING |   WAITING |
+|               270 | 14 |     READY |   RUNNING |
+|               280 |  8 |   WAITING |     READY |
+|               300 | 14 |   RUNNING |   WAITING |
+|               300 |  3 |     READY |   RUNNING |
+|               310 | 14 |   WAITING |     READY |
+|               350 |  3 |   RUNNING |TERMINATED |
+|               350 |  8 |     READY |   RUNNING |
+|               370 |  8 |   RUNNING |   WAITING |
+|               370 | 14 |     READY |   RUNNING |
+|               380 |  8 |   WAITING |     READY |
+|               400 | 14 |   RUNNING |   WAITING |
+|               400 |  8 |     READY |   RUNNING |
+|               410 | 14 |   WAITING |     READY |
+|               420 |  8 |   RUNNING |TERMINATED |
+|               420 | 14 |     READY |   RUNNING |
+|               450 | 14 |   RUNNING |TERMINATED |
++------------------------------------------------+
